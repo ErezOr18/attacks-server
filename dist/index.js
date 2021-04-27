@@ -21,7 +21,7 @@ const typeorm_text_search_1 = require("typeorm-text-search");
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
 }
-const port = 5000;
+const port = process.env.PORT || 5000;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const databaseUrl = process.env.DATABASE_URL;

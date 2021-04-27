@@ -10,7 +10,7 @@ import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConne
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 async function main() {
   const databaseUrl = process.env.DATABASE_URL;
