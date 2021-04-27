@@ -9,15 +9,23 @@ import { insertToDb } from "./helper";
 const port = 5000;
 
 async function main() {
-  const conn = await createConnection({
-    type: "postgres",
-    database: "refael",
-    username: "postgres",
-    password: "postgres",
-    entities: [Attack],
-    logging: false,
-    synchronize: true,
-  });
+  const conn =
+    process.env.NODE_ENV === "production"
+      ? await createConnection({
+          type: "postgres",
+          url: process.env.DATABASE_URL,
+          entities: [Attack],
+          logging: false,
+        })
+      : await createConnection({
+          type: "postgres",
+          database: "refael",
+          username: "postgres",
+          password: "postgres",
+          entities: [Attack],
+          logging: false,
+          synchronize: true,
+        });
   console.log("connection to database: ", conn.isConnected);
   await getRepository(Attack).delete({});
   await insertToDb();

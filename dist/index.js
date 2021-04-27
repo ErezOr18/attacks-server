@@ -22,15 +22,22 @@ const helper_1 = require("./helper");
 const port = 5000;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        const conn = yield typeorm_1.createConnection({
-            type: "postgres",
-            database: "refael",
-            username: "postgres",
-            password: "postgres",
-            entities: [Attack_1.Attack],
-            logging: false,
-            synchronize: true,
-        });
+        const conn = process.env.NODE_ENV === "production"
+            ? yield typeorm_1.createConnection({
+                type: "postgres",
+                url: process.env.DATABASE_URL,
+                entities: [Attack_1.Attack],
+                logging: false,
+            })
+            : yield typeorm_1.createConnection({
+                type: "postgres",
+                database: "refael",
+                username: "postgres",
+                password: "postgres",
+                entities: [Attack_1.Attack],
+                logging: false,
+                synchronize: true,
+            });
         console.log("connection to database: ", conn.isConnected);
         yield typeorm_1.getRepository(Attack_1.Attack).delete({});
         yield helper_1.insertToDb();
