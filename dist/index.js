@@ -30,6 +30,7 @@ function main() {
                 type: "postgres",
                 url: databaseUrl,
                 entities: [Attack_1.Attack],
+                ssl: { rejectUnauthorized: false },
             };
             const conn = yield typeorm_1.createConnection(typeOrmOptions);
             console.log("connection to database: ", conn.isConnected);

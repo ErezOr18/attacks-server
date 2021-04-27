@@ -19,6 +19,7 @@ async function main() {
       type: "postgres",
       url: databaseUrl,
       entities: [Attack],
+      ssl: { rejectUnauthorized: false },
     };
 
     const conn = await createConnection(typeOrmOptions);
