@@ -4,31 +4,30 @@ import "reflect-metadata";
 import { createConnection, getRepository } from "typeorm";
 import { Attack } from "./entities/Attack";
 import { textSearchByFields } from "typeorm-text-search";
-import { insertToDb } from "./helper";
+import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
 
+// import { insertToDb } from "./helper";
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 const port = 5000;
 
 async function main() {
-  const conn =
-    process.env.NODE_ENV === "production"
-      ? await createConnection({
-          type: "postgres",
-          url: process.env.DATABASE_URL,
-          entities: [Attack],
-          logging: false,
-        })
-      : await createConnection({
-          type: "postgres",
-          database: "refael",
-          username: "postgres",
-          password: "postgres",
-          entities: [Attack],
-          logging: false,
-          synchronize: true,
-        });
-  console.log("connection to database: ", conn.isConnected);
-  await getRepository(Attack).delete({});
-  await insertToDb();
+  const databaseUrl = process.env.DATABASE_URL;
+  try {
+    const typeOrmOptions: PostgresConnectionOptions = {
+      type: "postgres",
+      url: databaseUrl,
+      entities: [Attack],
+    };
+
+    const conn = await createConnection(typeOrmOptions);
+    console.log("connection to database: ", conn.isConnected);
+    // await getRepository(Attack).delete({});
+    // await insertToDb();
+  } catch (err) {
+    console.error(err);
+  }
   const app = express();
   app.use(cors());
   app.use(express.json());

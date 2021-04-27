@@ -18,29 +18,25 @@ require("reflect-metadata");
 const typeorm_1 = require("typeorm");
 const Attack_1 = require("./entities/Attack");
 const typeorm_text_search_1 = require("typeorm-text-search");
-const helper_1 = require("./helper");
+if (process.env.NODE_ENV !== "production") {
+    require("dotenv").config();
+}
 const port = 5000;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        const conn = process.env.NODE_ENV === "production"
-            ? yield typeorm_1.createConnection({
+        const databaseUrl = process.env.DATABASE_URL;
+        try {
+            const typeOrmOptions = {
                 type: "postgres",
-                url: process.env.DATABASE_URL,
+                url: databaseUrl,
                 entities: [Attack_1.Attack],
-                logging: false,
-            })
-            : yield typeorm_1.createConnection({
-                type: "postgres",
-                database: "refael",
-                username: "postgres",
-                password: "postgres",
-                entities: [Attack_1.Attack],
-                logging: false,
-                synchronize: true,
-            });
-        console.log("connection to database: ", conn.isConnected);
-        yield typeorm_1.getRepository(Attack_1.Attack).delete({});
-        yield helper_1.insertToDb();
+            };
+            const conn = yield typeorm_1.createConnection(typeOrmOptions);
+            console.log("connection to database: ", conn.isConnected);
+        }
+        catch (err) {
+            console.error(err);
+        }
         const app = express_1.default();
         app.use(cors_1.default());
         app.use(express_1.default.json());
