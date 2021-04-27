@@ -5,6 +5,7 @@ import { createConnection, getRepository } from "typeorm";
 import { Attack } from "./entities/Attack";
 import { textSearchByFields } from "typeorm-text-search";
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
+import { insertToDb, queryInsert } from "./helper";
 
 // import { insertToDb } from "./helper";
 if (process.env.NODE_ENV !== "production") {
@@ -18,14 +19,19 @@ async function main() {
     type: "postgres",
     url: databaseUrl,
     entities: [Attack],
-    ssl: { rejectUnauthorized: false },
+    ssl:
+      process.env.NODE_ENV === "production"
+        ? { rejectUnauthorized: false }
+        : undefined,
+    // logging: true,
+    // logger: "file",
   };
-
+  console.log("");
   const conn = await createConnection(typeOrmOptions);
   console.log("connection to database: ", conn.isConnected);
-  await getRepository(Attack).delete({});
-  await insertToDb();
-  console.error(err);
+  // await getRepository(Attack).delete({});
+  // await insertToDb();
+  // await queryInsert();
 
   const app = express();
   app.use(cors());

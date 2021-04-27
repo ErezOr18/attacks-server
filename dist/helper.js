@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.insertToDb = void 0;
+exports.queryInsert = exports.insertToDb = void 0;
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const Attack_1 = require("./entities/Attack");
@@ -39,18 +39,23 @@ function insertToDb() {
                 const xMitrePlatforms = object.x_mitre_platforms;
                 const xMitreDetection = [object.x_mitre_detection];
                 const attackRepository = typeorm_1.getRepository(Attack_1.Attack);
-                const res = yield attackRepository.insert({
+                const sql = yield attackRepository.insert({
                     id,
                     name,
                     description,
-                    phaseName: phaseName.length === 0 ? ["NA"] : phaseName,
+                    phaseName: phaseName.length === 0 ? ["NA"] : ["phaseName"],
                     xMitrePlatforms,
                     xMitreDetection,
                 });
-                console.log(res.raw);
+                sql.generatedMaps;
             }));
         });
     });
 }
 exports.insertToDb = insertToDb;
+const queryInsert = () => {
+    const buffer = fs_1.default.readFileSync(path_1.default.join(__dirname, "../src/query.txt"));
+    typeorm_1.getConnection().query(buffer.toString());
+};
+exports.queryInsert = queryInsert;
 //# sourceMappingURL=helper.js.map

@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { Attack } from "./entities/Attack";
-import { getRepository } from "typeorm";
+import { getConnection, getRepository } from "typeorm";
 export async function insertToDb() {
   const dataPath = path.join(__dirname, "../../data");
   const files = fs.readdirSync(dataPath);
@@ -24,15 +24,19 @@ export async function insertToDb() {
       const xMitrePlatforms: string[] = object.x_mitre_platforms;
       const xMitreDetection: string[] = [object.x_mitre_detection];
       const attackRepository = getRepository(Attack);
-      const res = await attackRepository.insert({
+      const sql = await attackRepository.insert({
         id,
         name,
         description,
-        phaseName: phaseName.length === 0 ? ["NA"] : phaseName,
+        phaseName: phaseName.length === 0 ? ["NA"] : ["phaseName"],
         xMitrePlatforms,
         xMitreDetection,
       });
-      console.log(res.raw);
+      sql.generatedMaps;
     });
   });
 }
+export const queryInsert = () => {
+  const buffer = fs.readFileSync(path.join(__dirname, "../src/query.txt"));
+  getConnection().query(buffer.toString());
+};

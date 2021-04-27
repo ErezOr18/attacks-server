@@ -29,13 +29,13 @@ function main() {
             type: "postgres",
             url: databaseUrl,
             entities: [Attack_1.Attack],
-            ssl: { rejectUnauthorized: false },
+            ssl: process.env.NODE_ENV === "production"
+                ? { rejectUnauthorized: false }
+                : undefined,
         };
+        console.log("");
         const conn = yield typeorm_1.createConnection(typeOrmOptions);
         console.log("connection to database: ", conn.isConnected);
-        yield typeorm_1.getRepository(Attack_1.Attack).delete({});
-        yield insertToDb();
-        console.error(err);
         const app = express_1.default();
         app.use(cors_1.default());
         app.use(express_1.default.json());
