@@ -14,21 +14,19 @@ const port = process.env.PORT || 5000;
 
 async function main() {
   const databaseUrl = process.env.DATABASE_URL;
-  try {
-    const typeOrmOptions: PostgresConnectionOptions = {
-      type: "postgres",
-      url: databaseUrl,
-      entities: [Attack],
-      ssl: { rejectUnauthorized: false },
-    };
+  const typeOrmOptions: PostgresConnectionOptions = {
+    type: "postgres",
+    url: databaseUrl,
+    entities: [Attack],
+    ssl: { rejectUnauthorized: false },
+  };
 
-    const conn = await createConnection(typeOrmOptions);
-    console.log("connection to database: ", conn.isConnected);
-    // await getRepository(Attack).delete({});
-    // await insertToDb();
-  } catch (err) {
-    console.error(err);
-  }
+  const conn = await createConnection(typeOrmOptions);
+  console.log("connection to database: ", conn.isConnected);
+  await getRepository(Attack).delete({});
+  await insertToDb();
+  console.error(err);
+
   const app = express();
   app.use(cors());
   app.use(express.json());
